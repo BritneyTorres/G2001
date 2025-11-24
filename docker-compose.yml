@@ -2,12 +2,12 @@ services:
   backend:
     build:
       context: ./critico-mern/server
+      target: prod
     image: critico/backend:latest
     container_name: critico-backend
     restart: unless-stopped
-    # Load environment variables from the server .env file (runtime)
     env_file:
-      - ./critico-mern/server/.env
+      - .env
     depends_on:
       mongo:
         condition: service_healthy
@@ -17,14 +17,14 @@ services:
   frontend:
     build:
       context: ./critico-mern/client
+      target: prod
+      args:
+        - VITE_API_URL=/api
     image: critico/frontend:latest
     container_name: critico-frontend
     restart: unless-stopped
-    # Load environment variables for runtime (useful if frontend reads runtime envs)
-    env_file:
-      - ./critico-mern/client/.env
     ports:
-      - "5173:5173"
+      - "5173:80"
     depends_on:
       - backend
 
